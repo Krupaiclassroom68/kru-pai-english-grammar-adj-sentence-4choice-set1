@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Adjective Usage MCQ • 40 Questions (Ordered)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#F8FAFF;
+      --card:#FFFFFF;
+      --ink:#0F172A;
+      --muted:#64748B;
+      --brand:#2563EB;
+      --accent:#F59E0B;
+      --ok:#16A34A;
+      --bad:#DC2626;
+      --shadow: 0 8px 22px rgba(2,6,23,.08);
+      --radius: 20px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; background:var(--bg); color:var(--ink); font-family:"Prompt",sans-serif; display:flex; justify-content:center; min-height:100vh; padding:24px;}
+    .app{width:min(980px,100%);}
+    .brand{display:flex; flex-direction:column; align-items:center; gap:8px; margin-bottom:18px;}
+    .logo{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--accent));box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;color:white;font:700 26px Fredoka;}
+    .title{font:700 26px "Fredoka",sans-serif;color:var(--brand)}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;}
+    h1{font:700 clamp(22px,4.2vw,34px) "Fredoka";margin:6px 0 10px;color:var(--brand)}
+    p.lead{color:var(--muted);font-size:18px}
+    input[type=text]{width:100%;padding:16px;border-radius:14px;border:2px solid #E2E8F0;font-size:18px;}
+    input[type=text]:focus{border-color:var(--brand);outline:none;}
+    .btn{cursor:pointer;border:none;border-radius:14px;padding:14px 20px;font:700 18px "Fredoka";transition:.2s}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--accent));color:white;box-shadow:0 6px 15px rgba(37,99,235,.3)}
+    .btn.secondary{background:#fff;color:var(--brand);border:2px solid var(--brand)}
+    .question{font-size:22px;margin:12px 0 16px;}
+    .choices{display:grid;gap:12px;grid-template-columns:1fr;}
+    @media(min-width:640px){.choices{grid-template-columns:1fr 1fr;}}
+    .choice{padding:14px;border:2px solid #E2E8F0;border-radius:14px;font:600 18px "Prompt";cursor:pointer;transition:.15s;background:#fff;text-align:left}
+    .choice.correct{border-color:var(--ok);background:#ECFDF5}
+    .choice.wrong{border-color:var(--bad);background:#FEF2F2}
+    .meta{color:#64748B;font-size:14px;margin-top:8px}
+    .scoreBig{font:800 clamp(28px,7vw,48px) "Fredoka";color:var(--brand);margin:8px 0 0;text-align:center}
+    .explain{font-size:16px;color:#334155;margin-top:8px}
+    .toolbar{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">
+    <div class="logo">KP</div>
+    <div class="title">Kru Pai Classroom</div>
+  </div>
+
+  <!-- Start -->
+  <section id="start" class="card">
+    <h1>✨ Adjective Usage Quiz – 40 ข้อ</h1>
+    <p class="lead">แบบทดสอบ 4 ตัวเลือก เน้นใช้คำคุณศัพท์ให้ตรงบริบท (ข้อเรียงจาก 1–40)</p>
+    <input id="playerName" type="text" placeholder="พิมพ์ชื่อเล่นของคุณ" />
+    <div class="toolbar">
+      <button class="btn primary" onclick="begin()">▶️ เริ่มทำแบบทดสอบ</button>
+    </div>
+  </section>
+
+  <!-- Quiz -->
+  <section id="quiz" class="card hidden">
+    <h1 id="progress">ข้อ 1/40</h1>
+    <div id="question" class="question">...</div>
+    <div id="choices" class="choices"></div>
+    <div class="meta" id="meta">เลือกคำตอบที่ถูกต้องที่สุดเพียงข้อเดียว</div>
+  </section>
+
+  <!-- Result -->
+  <section id="result" class="card hidden">
+    <h1>ผลคะแนน</h1>
+    <div class="scoreBig" id="scoreBig">0/40</div>
+    <div id="breakdown" class="meta"></div>
+    <div class="toolbar">
+      <button class="btn primary" onclick="resetAll()">🔁 ทำใหม่</button>
+      <button class="btn secondary" onclick="toggleReview()">📄 ดูเฉลย</button>
+    </div>
+    <div id="reviewPanel" class="hidden">
+      <h1 style="margin-top:20px">เฉลยและคำอธิบาย</h1>
+      <div id="reviewList"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const QUESTIONS=[
+{q:"1) The elephant is very _____. It is much bigger than a horse.",choices:["A. big","B. small","C. short","D. thin"],ans:0,exp:"'big' เข้ากับบริบทชัดเจน (ช้างใหญ่กว่าม้า)"},
+{q:"2) My bag is ____ than yours. I can hardly carry it.",choices:["A. heavy","B. heavier","C. heaviest","D. most heavy"],ans:1,exp:"รูปเปรียบเทียบกว่า → 'heavier'"},
+{q:"3) Today is a ____ day. The sun is shining and there are no clouds.",choices:["A. rainy","B. sunny","C. cloudy","D. windy"],ans:1,exp:"ท้องฟ้าไม่มีเมฆแดดออก → 'sunny'"},
+{q:"4) The math test is very _____. Almost nobody got a full score.",choices:["A. easy","B. clear","C. difficult","D. funny"],ans:2,exp:"ยากมาก → 'difficult'"},
+{q:"5) This ice cream is very _____. I like sweet things.",choices:["A. hot","B. salty","C. sweet","D. sour"],ans:2,exp:"ไอศกรีมหวาน → 'sweet'"},
+{q:"6) My house is ____ than yours. It has more rooms.",choices:["A. big","B. most big","C. biggest","D. bigger"],ans:3,exp:"รูปเปรียบเทียบกว่า → 'bigger'"},
+{q:"7) This road is the ____ in our town. It is 10 kilometers long.",choices:["A. long","B. longer","C. more long","D. longest"],ans:3,exp:"สุดกว่า → 'longest'"},
+{q:"8) Her handwriting is ____ than mine. Everyone can read it clearly.",choices:["A. clearer","B. clear","C. clearest","D. most clear"],ans:0,exp:"รูปเปรียบเทียบกว่า → 'clearer'"},
+{q:"9) He is the ____ student in the class. He always gets the highest score.",choices:["A. clever","B. cleverest","C. cleverer","D. most clever"],ans:1,exp:"สุดกว่า → 'cleverest'"},
+{q:"10) This problem is ____ than that one. It only takes 1 minute to solve.",choices:["A. easy","B. easiest","C. easier","D. most easy"],ans:2,exp:"เปรียบเทียบกว่า → 'easier'"},
+{q:"11) She looks very ____. She just lost her toy.",choices:["A. happy","B. excited","C. funny","D. sad"],ans:3,exp:"เสียของเล่น → 'sad'"},
+{q:"12) The children are ____ because tomorrow is a holiday.",choices:["A. tired","B. excited","C. angry","D. bored"],ans:1,exp:"จะหยุดพรุ่งนี้ → 'excited'"},
+{q:"13) He feels ____ after running ten kilometers.",choices:["A. sleepy","B. happy","C. tall","D. tired"],ans:3,exp:"วิ่ง 10 กม. → 'tired'"},
+{q:"14) I was ____ when I saw the big dog barking at me.",choices:["A. afraid","B. bored","C. proud","D. sleepy"],ans:0,exp:"สุนัขเห่าใส่ → 'afraid'"},
+{q:"15) We are ____ of our team. They won the game!",choices:["A. bored","B. angry","C. proud","D. afraid"],ans:2,exp:"ทีมชนะ → 'proud'"},
+{q:"16) The ball is ____. You can roll it easily.",choices:["A. square","B. long","C. tall","D. round"],ans:3,exp:"กลม → 'round'"},
+{q:"17) The sky is ____ on a clear day.",choices:["A. red","B. green","C. yellow","D. blue"],ans:3,exp:"ท้องฟ้าใส → 'blue'"},
+{q:"18) The leaves are ____. That’s why the trees look fresh.",choices:["A. white","B. black","C. green","D. pink"],ans:2,exp:"ใบไม้สีเขียว → 'green'"},
+{q:"19) The sun is ____. It shines brightly every morning.",choices:["A. yellow","B. blue","C. brown","D. black"],ans:0,exp:"ดวงอาทิตย์สีเหลือง → 'yellow'"},
+{q:"20) The panda is ____. That’s why it looks so cute.",choices:["A. red and green","B. black and white","C. brown and blue","D. yellow and pink"],ans:1,exp:"หมีแพนด้า → 'black and white'"},
+{q:"21) My grandfather is 80 years old. He is very ____.",choices:["A. young","B. short","C. old","D. thin"],ans:2,exp:"อายุ 80 → 'old'"},
+{q:"22) The baby drinks a lot of milk every day. He is very ____.",choices:["A. tall","B. fat","C. thin","D. short"],ans:1,exp:"กินนมเยอะ → 'fat'"},
+{q:"23) She is a ____ girl. She always helps her friends.",choices:["A. lazy","B. rude","C. angry","D. kind"],ans:3,exp:"ช่วยเพื่อนเสมอ → 'kind'"},
+{q:"24) He is very ____. He never tells lies.",choices:["A. lazy","B. honest","C. rude","D. funny"],ans:1,exp:"ไม่โกหก → 'honest'"},
+{q:"25) The boy is ____. He makes everyone laugh with his jokes.",choices:["A. sad","B. shy","C. angry","D. funny"],ans:3,exp:"ทำให้คนหัวเราะ → 'funny'"},
+{q:"26) The movie is very ____. I want to watch it again.",choices:["A. exciting","B. boring","C. sad","D. lazy"],ans:0,exp:"อยากดูซ้ำ → 'exciting'"},
+{q:"27) The park is ____. Many families go there every weekend.",choices:["A. dirty","B. clean","C. noisy","D. narrow"],ans:1,exp:"คนไปเดินเล่น → 'clean'"},
+{q:"28) The classroom is too ____. There are 50 students inside.",choices:["A. big","B. wide","C. small","D. long"],ans:2,exp:"คนแน่น → 'small'"},
+{q:"29) The hotel is very ____. The rooms cost $300 a night.",choices:["A. cheap","B. dirty","C. noisy","D. expensive"],ans:3,exp:"แพงมาก → 'expensive'"},
+{q:"30) The market is always ____. You can hear people shouting and selling things.",choices:["A. noisy","B. quiet","C. boring","D. clean"],ans:0,exp:"ได้ยินเสียงคนตะโกนขายของ → 'noisy'"},
+{q:"31) Her hair is very ____. It goes down to her waist.",choices:["A. short","B. long","C. tall","D. thin"],ans:1,exp:"ยาวถึงเอว → 'long'"},
+{q:"32) My shoes are ____. I cannot wear them comfortably.",choices:["A. big","B. long","C. small","D. short"],ans:2,exp:"ใส่ไม่สบาย → 'small' (คับ/แน่น)"},
+{q:"33) This book is very ____. I read it every night before bed.",choices:["A. interesting","B. boring","C. lazy","D. tired"],ans:0,exp:"อ่านทุกคืน → 'interesting'"},
+{q:"34) The soup is too ____. We need more water.",choices:["A. sweet","B. hot","C. salty","D. sour"],ans:2,exp:"เค็มเกินไป → 'salty'"},
+{q:"35) The weather is so ____. We need jackets outside.",choices:["A. hot","B. cold","C. cool","D. warm"],ans:1,exp:"ต้องใส่เสื้อกันหนาว → 'cold'"},
+{q:"36) His voice is very ____. Everyone in the hall can hear him.",choices:["A. loud","B. soft","C. quiet","D. small"],ans:0,exp:"ดังมาก → 'loud'"},
+{q:"37) The baby is very ____. He can’t keep his eyes open.",choices:["A. awake","B. tall","C. funny","D. sleepy"],ans:3,exp:"ลืมตาไม่ขึ้น → 'sleepy'"},
+{q:"38) The river is very ____. It is dangerous to swim there.",choices:["A. deep","B. clean","C. dirty","D. narrow"],ans:0,exp:"อันตรายเพราะลึก → 'deep'"},
+{q:"39) The story is too ____. I stopped reading after two pages.",choices:["A. exciting","B. funny","C. boring","D. interesting"],ans:2,exp:"หยุดอ่านเพราะน่าเบื่อ → 'boring'"},
+{q:"40) She is a very ____ singer. Her songs are loved by everyone.",choices:["A. good","B. poor","C. lazy","D. bad"],ans:0,exp:"คนชอบเพลงมาก → 'good'"}];
+
+const el={
+  start:document.getElementById('start'),
+  quiz:document.getElementById('quiz'),
+  result:document.getElementById('result'),
+  playerName:document.getElementById('playerName'),
+  progress:document.getElementById('progress'),
+  question:document.getElementById('question'),
+  choices:document.getElementById('choices'),
+  scoreBig:document.getElementById('scoreBig'),
+  breakdown:document.getElementById('breakdown'),
+  reviewPanel:document.getElementById('reviewPanel'),
+  reviewList:document.getElementById('reviewList')
+};
+
+let order=[], idx=0, score=0, answers=[];
+
+function begin(){
+  if(!el.playerName.value.trim()){alert("กรุณากรอกชื่อก่อน");return;}
+  order = Array.from(QUESTIONS.keys()); // ordered
+  idx=0; score=0; answers=[];
+  el.start.classList.add('hidden');
+  el.result.classList.add('hidden');
+  el.quiz.classList.remove('hidden');
+  renderQ();
+}
+
+function renderQ(){
+  const qIndex=order[idx];
+  const item=QUESTIONS[qIndex];
+  el.progress.textContent=`ข้อ ${idx+1}/${QUESTIONS.length}`;
+  el.question.textContent=item.q;
+  el.choices.innerHTML='';
+  item.choices.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='choice';
+    b.textContent=opt;
+    b.onclick=()=>submit(i,item.ans,b);
+    el.choices.appendChild(b);
+  });
+}
+
+function submit(sel,correct,btn){
+  const buttons=[...el.choices.children];
+  buttons.forEach(b=>b.disabled=true);
+  if(sel===correct){score++;btn.classList.add('correct');}else{btn.classList.add('wrong');}
+  buttons.forEach((b,i)=>{if(i===correct)b.classList.add('correct');});
+  answers.push({qIndex:order[idx], sel, correct});
+  setTimeout(()=>{
+    idx++;
+    if(idx>=QUESTIONS.length){finish();} else {renderQ();}
+  }, 900);
+}
+
+function finish(){
+  el.quiz.classList.add('hidden');
+  el.result.classList.remove('hidden');
+  el.scoreBig.textContent=`${score}/${QUESTIONS.length}`;
+  const counts={A:0,B:0,C:0,D:0};
+  QUESTIONS.forEach(it=>{ if(it.ans===0) counts.A++; else if(it.ans===1) counts.B++; else if(it.ans===2) counts.C++; else counts.D++; });
+  el.breakdown.textContent=`กระจายเฉลย: A=${counts.A} • B=${counts.B} • C=${counts.C} • D=${counts.D}`;
+  el.reviewList.innerHTML='';
+  answers.forEach((a,idx1)=>{
+    const it=QUESTIONS[a.qIndex];
+    const div=document.createElement('div');
+    div.style.margin='10px 0';
+    const correctLetter=['A','B','C','D'][it.ans];
+    const yourLetter=['A','B','C','D'][a.sel];
+    div.innerHTML=`<div><strong>ข้อ ${idx1+1}</strong> ${it.q}</div>
+      <div>คำตอบของคุณ: <strong>${yourLetter}</strong> | คำตอบที่ถูก: <strong>${correctLetter}</strong></div>
+      <div class="explain">เหตุผล: ${it.exp}</div>`;
+    el.reviewList.appendChild(div);
+  });
+}
+
+function toggleReview(){ el.reviewPanel.classList.toggle('hidden'); }
+function resetAll(){
+  el.playerName.value='';
+  el.result.classList.add('hidden');
+  el.quiz.classList.add('hidden');
+  el.start.classList.remove('hidden');
+}
+</script>
+</body>
+</html>
